@@ -6,10 +6,14 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 import time, os, random, sys
 
-titler = "10.1038/nbt1096"
+titler = "10.1038/nbt1060"
+titler2 = "10.1038/nbt1059"
 
 dicter = {"DOI":titler}
-Listdicter = [dicter]
+dicter2 = {"DOI":titler2}
+
+
+Listdicter = [{"DOI":"10.1038/nbt1053"}, {"DOI":"10.1038/nbt0105-27"}, {"DOI":"10.1038/nbt1056"}, {"DOI":"10.1038/nbt1045"}, {"DOI":"10.1038/nbt1047"}, {"DOI":"10.1038/nbt1043"}, {"DOI":"10.1038/nbt1050"}, {"DOI":"10.1038/nbt1048"}, {"DOI":"10.1038/nbt1046"}, {"DOI":"10.1038/nbt1164"}, {"DOI":"10.1038/nbt1156"}, {"DOI":"10.1038/nbt1163"}]
 
 class isi_parser:
     """
@@ -29,9 +33,9 @@ class isi_parser:
         browser.get(self.base_url) # Load page
         
         for artDict in articleList:
-            #check to make sure that the 
+            #check to make sure that we have the right type of data. Just DOI for now
             if artDict.has_key("DOI"):
-
+                
                 #put in title info
                 try:
                     elem = browser.find_element_by_id("value(input1)") # Find the query box
@@ -187,8 +191,12 @@ class isi_parser:
                     stringStart = 'mv /tmp/savedrecs.html'
                     stringMid = ' /home/dcfehder/dev/nbt/download/ISI/cf-'
                     saveString = stringStart + stringMid + artDict["DOI"][8:] + '.html'
-
-                    os.system(saveString)
+                    #This is to ensure you don't save something you already have
+                    checker = stringMid[1:] + artDict["DOI"][8:]+ '.html'
+                    if os.path.exists(checker):
+                        pass
+                    else:
+                        os.system(saveString)
                     
                     print "do stuff here with processing the file before moving onto the next loop"
                 except:
